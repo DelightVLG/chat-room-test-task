@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { roomNames } from '../../config/roomsNames';
+
 import './Join.css';
 
 function Join() {
@@ -30,10 +31,16 @@ function Join() {
           type="text"
           className="join__input"
           onChange={handleChange}
+          minLength="2"
           required
         />
         <span className="join__input-wrapper" />
-        <input type="submit" className="join__submit" value="Join" disabled={!userName} />
+        <input
+          type="submit"
+          className={userName.length >= 2 ? 'join__submit' : 'join__submit_inactive'}
+          value="Join"
+          disabled={userName.length < 2}
+        />
       </form>
     </div>
   );
