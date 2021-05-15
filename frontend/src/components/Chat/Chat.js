@@ -20,6 +20,10 @@ const Chat = () => {
 
   const [userName, setUserName] = useState('');
   const [roomName, setRoomName] = useState('');
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+
+  console.log(userName, roomName);
 
   useEffect(() => {
     const { name, room } = queryString.parse(path.location.search);
@@ -29,7 +33,9 @@ const Chat = () => {
     setUserName(name);
     setRoomName(room);
 
-    socket.emit('join', { name, room });
+    socket.emit('join', { name, room }, () => {
+      console.log('sss');
+    });
 
     return () => {
       socket.emit('disconnecting');
@@ -37,18 +43,31 @@ const Chat = () => {
     };
   }, [ENDPOINT, path.location.search]);
 
+  useEffect(() => {
+    socket.on('message', (m) => {
+      setMessages([...messages, m]);
+    });
+  }, [messages]);
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+
+    if (message) {
+      socket.emit('sendMessage', message, () => setMessage(''));
+    }
+  };
+
+  console.log(message, messages);
+
   return (
     <div>
-
-      <h1>
-        Hi
-        {userName}
-      </h1>
-      <p>
-        You are in room
-        {roomName}
-      </p>
-
+      <div>
+        <input
+          value={message}
+          onChange={(e) => { setMessage(e.target.value); }}
+          onKeyPress={(e) => (e.key === 'Enter' ? sendMessage(e) : null)}
+        />
+      </div>
     </div>
   );
 };
