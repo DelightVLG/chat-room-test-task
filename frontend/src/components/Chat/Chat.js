@@ -60,8 +60,8 @@ const Chat = () => {
   console.log(message, messages);
 
   return (
-    <div>
-      <div>
+    <div className="chat">
+      <div className="chat__inner-container">
         <input
           value={message}
           onChange={(e) => { setMessage(e.target.value); }}
